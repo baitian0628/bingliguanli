@@ -1,0 +1,338 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  font-size: 14px;
+  color: #333;
+  background: #F5F7FA;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* 顶部标题栏 */
+.header {
+  background: #4A90D9;
+  color: white;
+  padding: 0 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  -webkit-app-region: drag;
+}
+.header h1 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.header .user-info {
+  font-size: 13px;
+  opacity: 0.9;
+  -webkit-app-region: no-drag;
+}
+.header .back-btn {
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.header .back-btn:hover {
+  opacity: 0.8;
+}
+
+/* 按钮 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: #4A90D9;
+  color: white;
+}
+.btn-primary:hover {
+  background: #3A7CC5;
+}
+.btn-outline {
+  background: white;
+  color: #4A90D9;
+  border: 1px solid #4A90D9;
+}
+.btn-outline:hover {
+  background: #F0F5FB;
+}
+.btn-danger {
+  background: white;
+  color: #E74C3C;
+  border: 1px solid #E74C3C;
+}
+.btn-danger:hover {
+  background: #FFF0F0;
+}
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+.btn-text {
+  background: none;
+  border: none;
+  color: #4A90D9;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+}
+.btn-text:hover {
+  background: #F0F5FB;
+  border-radius: 4px;
+}
+
+/* 输入框 */
+.input {
+  padding: 8px 12px;
+  border: 1px solid #D0DDEB;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  background: white;
+  transition: border-color 0.15s;
+}
+.input:focus {
+  border-color: #4A90D9;
+  box-shadow: 0 0 0 2px rgba(74,144,217,0.12);
+}
+.input::placeholder {
+  color: #BCC8D6;
+}
+
+/* 下拉选择 */
+.select {
+  padding: 8px 12px;
+  border: 1px solid #D0DDEB;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  background: white;
+  cursor: pointer;
+}
+.select:focus {
+  border-color: #4A90D9;
+}
+
+/* 表格 */
+.table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead th {
+  background: #F0F5FB;
+  color: #4A6A8A;
+  font-weight: 500;
+  font-size: 12px;
+  padding: 10px 12px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+thead th:hover { background: #E4EEF8; }
+tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #F0F2F5;
+  font-size: 13px;
+}
+tbody tr:hover {
+  background: #FAFCFE;
+}
+
+/* 病情标签 */
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* 卡片 */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* 弹窗遮罩 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  min-width: 380px;
+  max-width: 600px;
+  overflow: hidden;
+}
+.modal-header {
+  background: #4A90D9;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+.modal-close {
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.8;
+}
+.modal-close:hover { opacity: 1; }
+.modal-body {
+  padding: 20px;
+}
+.modal-footer {
+  padding: 0 20px 16px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* 上传区域 */
+.upload-zone {
+  border: 2px dashed #C4D8ED;
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  background: #FAFCFE;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: #4A90D9;
+  background: #F0F5FB;
+}
+
+/* 照片缩略图 */
+.photo-thumb {
+  width: 100px;
+  height: 100px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #E8ECF1;
+}
+.photo-thumb-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+.photo-thumb-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #E74C3C;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: #A0BBD0;
+}
+.empty-state .icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #C8D6E5;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A8BED0;
+}
+
+/* 确认对话框 */
+.confirm-text {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* 图片查看器 */
+.image-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  cursor: pointer;
+}
+.image-viewer img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}

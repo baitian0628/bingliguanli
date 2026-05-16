@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>病人信息</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .form-layout {
+      display: flex;
+      gap: 24px;
+      padding: 24px;
+      height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+    .form-left {
+      width: 380px;
+      flex-shrink: 0;
+    }
+    .form-right {
+      flex: 1;
+      min-width: 0;
+    }
+    .form-section {
+      background: white;
+      border-radius: 8px;
+      padding: 18px 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+    }
+    .form-section h3 {
+      font-size: 14px;
+      color: #2A5A8C;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #F0F2F5;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: #7A9BB5;
+      margin-bottom: 4px;
+    }
+    .form-group label .required {
+      color: #E74C3C;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+    .form-row .form-group.small {
+      flex: 0 0 80px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .upload-area {
+      border: 2px dashed #C4D8ED;
+      border-radius: 10px;
+      padding: 32px;
+      text-align: center;
+      background: #FAFCFE;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: all 0.15s;
+    }
+    .upload-area:hover, .upload-area.drag-over {
+      border-color: #4A90D9;
+      background: #F0F5FB;
+    }
+    .upload-icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+    .upload-text {
+      font-size: 13px;
+      color: #4A90D9;
+    }
+    .upload-hint {
+      font-size: 11px;
+      color: #A0BBD0;
+      margin-top: 4px;
+    }
+    .photo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .photo-thumb-card {
+      width: 110px;
+      height: 130px;
+      position: relative;
+    }
+    .photo-thumb-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #E8ECF1;
+    }
+    .photo-thumb-card .remove-btn {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #E74C3C;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back-btn" href="#main">&#x2190; 返回列表</a>
+  <span style="font-weight:600;" id="headerTitle">添加病人</span>
+  <span></span>
+</div>
+
+<div class="form-layout">
+  <div class="form-left">
+    <div class="form-section">
+      <h3>基本信息</h3>
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label><span class="required">*</span> 姓名</label>
+          <input class="input" type="text" id="name" placeholder="请输入姓名">
+        </div>
+        <div class="form-group small">
+          <label>性别</label>
+          <select class="select" id="gender">
+            <option value="男">男</option>
+            <option value="女">女</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group small">
+          <label>年龄</label>
+          <input class="input" type="number" id="age" placeholder="年龄" min="0" max="150">
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label>电话</label>
+          <input class="input" type="text" id="phone" placeholder="请输入电话">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>住址</label>
+        <input class="input" type="text" id="address" placeholder="如：东山村三组">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>看病信息</h3>
+      <div class="form-group">
+        <label>看病日期</label>
+        <input class="input" type="date" id="visitDate">
+      </div>
+      <div class="form-group">
+        <label>病情类型</label>
+        <select class="select" id="condition"></select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" id="saveBtn">保存</button>
+      <button class="btn btn-outline" id="cancelBtn">取消</button>
+    </div>
+    <div style="font-size:11px;color:#E74C3C;margin-top:8px;display:none;" id="errorMsg"></div>
+  </div>
+
+  <div class="form-right">
+    <h3 style="font-size:14px;color:#2A5A8C;margin-bottom:8px;">病历照片</h3>
+    <p style="font-size:12px;color:#A0BBD0;margin-bottom:12px;">支持上传多张病历照片，点击选择或拖拽到下方区域</p>
+    <div class="upload-area" id="uploadArea">
+      <div class="upload-icon">&#x1f4f7;</div>
+      <div class="upload-text">点击选择照片</div>
+      <div class="upload-hint">或将照片拖拽到此处</div>
+    </div>
+    <div class="photo-grid" id="photoGrid"></div>
+  </div>
+</div>
+
+<script src="js/form.js"></script>
+</body>
+</html>

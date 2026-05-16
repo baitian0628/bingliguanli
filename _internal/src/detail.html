@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>病人详情</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .detail-layout {
+      display: flex;
+      gap: 24px;
+      padding: 24px;
+      height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+    .detail-left {
+      width: 340px;
+      flex-shrink: 0;
+    }
+    .detail-right {
+      flex: 1;
+      min-width: 0;
+    }
+    .info-card {
+      background: white;
+      border-radius: 8px;
+      padding: 18px 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+    }
+    .info-card h3 {
+      font-size: 14px;
+      color: #2A5A8C;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #F0F2F5;
+    }
+    .info-row {
+      display: flex;
+      margin-bottom: 8px;
+      font-size: 13px;
+      line-height: 2;
+    }
+    .info-label {
+      color: #8AABC9;
+      width: 70px;
+      flex-shrink: 0;
+    }
+    .info-value {
+      color: #333;
+    }
+    .visit-card {
+      background: #FFFCF6;
+      border-radius: 8px;
+      padding: 18px 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .visit-card h3 {
+      font-size: 14px;
+      color: #C6791A;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #F0E8D0;
+    }
+    .photo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .photo-item {
+      width: 160px;
+      height: 200px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #E8ECF1;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .photo-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .detail-actions {
+      margin-top: 16px;
+    }
+    .no-photos {
+      color: #A0BBD0;
+      font-size: 13px;
+      text-align: center;
+      padding: 40px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back-btn" href="#main">&#x2190; 返回列表</a>
+  <span style="font-weight:600;" id="headerName">病历详情</span>
+  <span></span>
+</div>
+
+<div class="detail-layout">
+  <div class="detail-left">
+    <div class="info-card" id="infoCard"></div>
+    <div class="visit-card" id="visitCard"></div>
+    <div class="detail-actions">
+      <button class="btn btn-primary" id="editBtn">编辑病人</button>
+    </div>
+  </div>
+  <div class="detail-right">
+    <h3 style="font-size:14px;color:#2A5A8C;margin-bottom:12px;">病历照片</h3>
+    <div class="photo-grid" id="photoGrid"></div>
+  </div>
+</div>
+
+<!-- 图片查看器 -->
+<div class="image-viewer" id="imageViewer" style="display:none;" onclick="this.style.display='none'">
+  <img id="viewerImage" src="">
+</div>
+
+<script src="js/detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>病历管理系统</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .page { display: none; height: 100vh; }
+    .page.active { display: flex; flex-direction: column; }
+
+    /* 登录页样式 */
+    .page-login {
+      align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #E8F4FD 0%, #D0E8F8 50%, #F0F5FB 100%);
+    }
+    .login-card {
+      background: white; border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(74,144,217,0.15);
+      width: 380px; padding: 40px 36px; text-align: center;
+    }
+    .login-card .logo { font-size: 44px; margin-bottom: 8px; }
+    .login-card h2 { color: #2A5A8C; font-size: 20px; margin-bottom: 6px; }
+    .login-card .subtitle { color: #A0BBD0; font-size: 13px; margin-bottom: 32px; }
+    .login-field { text-align: left; margin-bottom: 18px; }
+    .login-field label { font-size: 12px; color: #7A9BB5; display: block; margin-bottom: 4px; }
+    .login-field input { width: 100%; }
+    .login-btn { width: 100%; padding: 11px; font-size: 15px; font-weight: 500; margin-top: 4px; }
+    .login-hint { margin-top: 16px; font-size: 11px; color: #B0C8DB; }
+    .error-msg { color: #E74C3C; font-size: 12px; margin-top: 8px; min-height: 18px; }
+    .change-pwd-link { margin-top: 14px; font-size: 12px; color: #4A90D9; cursor: pointer; }
+    .change-pwd-link:hover { text-decoration: underline; }
+    .change-pwd-row { display: none; text-align: left; margin-bottom: 18px; }
+    .change-pwd-row.show { display: block; }
+
+    /* 主界面布局 */
+    .app-layout { display: flex; flex: 1; overflow: hidden; }
+    .sidebar {
+      width: 210px; background: #F0F5FB;
+      border-right: 1px solid #D0DDEB;
+      display: flex; flex-direction: column; flex-shrink: 0;
+    }
+    .sidebar-search { padding: 12px; }
+    .sidebar-search input { width: 100%; padding: 7px 10px; font-size: 12px; }
+    .sidebar-list { flex: 1; overflow-y: auto; }
+    .village-item {
+      padding: 10px 16px; cursor: pointer; font-size: 13px;
+      border-left: 3px solid transparent;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.1s;
+    }
+    .village-item:hover { background: #E4EFF9; }
+    .village-item.active {
+      background: #D4E6F9; color: #2A5A8C;
+      font-weight: 600; border-left-color: #4A90D9;
+    }
+    .village-item .count { font-size: 11px; color: #A0BBD0; font-weight: normal; }
+    .village-item.active .count { color: #7A9BB5; }
+    .sidebar-add { padding: 12px; border-top: 1px solid #DDE8F3; }
+    .sidebar-add button { width: 100%; font-size: 12px; }
+
+    .main-content {
+      flex: 1; display: flex; flex-direction: column;
+      overflow: hidden; background: white; position: relative;
+    }
+    .toolbar {
+      padding: 12px 20px; display: flex; align-items: center;
+      gap: 8px; flex-wrap: wrap; border-bottom: 1px solid #F0F2F5;
+    }
+    .toolbar input { width: 100px; padding: 6px 10px; font-size: 12px; }
+    .toolbar .title-area {
+      display: flex; align-items: center; gap: 12px;
+      margin-right: auto; font-size: 14px; font-weight: 600; color: #2A5A8C;
+    }
+    .toolbar .patient-count { color: #A0BBD0; font-weight: normal; font-size: 12px; }
+    .filter-wrapper { position: relative; margin-left: auto; }
+    .table-container { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .ops-cell { display: flex; gap: 2px; }
+
+    /* 详情页样式 */
+    .detail-layout {
+      display: flex; gap: 24px; padding: 24px; flex: 1; overflow-y: auto;
+    }
+    .detail-left { width: 340px; flex-shrink: 0; }
+    .detail-right { flex: 1; min-width: 0; }
+    .info-card {
+      background: white; border-radius: 8px; padding: 18px 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 16px;
+    }
+    .info-card h3 { font-size: 14px; color: #2A5A8C; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #F0F2F5; }
+    .info-row { display: flex; margin-bottom: 8px; font-size: 13px; line-height: 2; }
+    .info-label { color: #8AABC9; width: 70px; flex-shrink: 0; }
+    .info-value { color: #333; }
+    .visit-card {
+      background: #FFFCF6; border-radius: 8px; padding: 18px 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .visit-card h3 { font-size: 14px; color: #C6791A; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #F0E8D0; }
+    .detail-photos { display: flex; flex-wrap: wrap; gap: 10px; }
+    .detail-photo-item {
+      width: 160px; height: 200px; border-radius: 8px;
+      overflow: hidden; border: 1px solid #E8ECF1; cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .detail-photo-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+    .detail-photo-item img { width: 100%; height: 100%; object-fit: cover; }
+    .no-photos { color: #A0BBD0; font-size: 13px; text-align: center; padding: 40px 0; }
+
+    /* 表单页样式 */
+    .form-layout {
+      display: flex; gap: 24px; padding: 24px; flex: 1; overflow-y: auto;
+    }
+    .form-left { width: 380px; flex-shrink: 0; }
+    .form-right { flex: 1; min-width: 0; }
+    .form-section {
+      background: white; border-radius: 8px; padding: 18px 22px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 16px;
+    }
+    .form-section h3 { font-size: 14px; color: #2A5A8C; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #F0F2F5; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; color: #7A9BB5; margin-bottom: 4px; }
+    .form-group label .required { color: #E74C3C; }
+    .form-group input, .form-group select { width: 100%; }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+    .form-row .form-group.small { flex: 0 0 80px; }
+    .form-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .upload-area {
+      border: 2px dashed #C4D8ED; border-radius: 10px;
+      padding: 32px; text-align: center; background: #FAFCFE;
+      cursor: pointer; margin-bottom: 16px; transition: all 0.15s;
+    }
+    .upload-area:hover, .upload-area.drag-over { border-color: #4A90D9; background: #F0F5FB; }
+    .upload-icon { font-size: 36px; margin-bottom: 8px; }
+    .upload-text { font-size: 13px; color: #4A90D9; }
+    .upload-hint { font-size: 11px; color: #A0BBD0; margin-top: 4px; }
+    .photo-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .photo-thumb-card { width: 110px; height: 130px; position: relative; }
+    .photo-thumb-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; border: 1px solid #E8ECF1; }
+    .photo-thumb-card .remove-btn {
+      position: absolute; top: -6px; right: -6px;
+      background: #E74C3C; color: white; border: none;
+      border-radius: 50%; width: 20px; height: 20px; font-size: 12px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    /* 图片查看器 */
+    .image-viewer {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85); display: flex;
+      align-items: center; justify-content: center; z-index: 200; cursor: pointer;
+    }
+    .image-viewer img { max-width: 90vw; max-height: 90vh; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- ==================== 登录页 ==================== -->
+<div class="page page-login active" id="pageLogin">
+  <div class="login-card">
+    <div class="logo">&#x1f3e5;</div>
+    <h2>病历管理系统</h2>
+    <p class="subtitle">欢迎使用病历管理系统</p>
+    <div class="login-field">
+      <label>账号</label>
+      <input class="input" type="text" id="usernameInput" value="默认用户" readonly style="color:#888;">
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+    <button class="btn btn-primary login-btn" id="loginBtn">登 录</button>
+    <p class="login-hint">仅供诊所内部使用</p>
+  </div>
+</div>
+
+<!-- ==================== 主页面 ==================== -->
+<div class="page" id="pageMain">
+  <div class="header">
+    <h1>&#x1f3e5; 病历管理系统</h1>
+    <span class="user-info" id="headerUsername" title="点击修改用户名" style="cursor:pointer;">默认用户</span>
+  </div>
+  <div class="app-layout">
+    <div class="sidebar">
+      <div class="sidebar-search">
+        <input class="input" type="text" id="villageSearch" placeholder="&#x1f50d; 搜索村庄...">
+      </div>
+      <div class="sidebar-list" id="villageList"></div>
+      <div class="sidebar-add">
+        <button class="btn btn-primary" id="addVillageBtn">+ 添加村庄</button>
+        <button class="btn btn-outline" id="mergeVillageBtn" style="margin-top:6px;width:100%;font-size:12px;">合并村庄</button>
+        <button class="btn btn-outline" id="manageTagsBtn" style="margin-top:6px;width:100%;font-size:12px;">管理病情标签</button>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="toolbar" style="flex-wrap:wrap;">
+        <div class="title-area" id="titleArea">请选择左侧村庄<span class="patient-count" id="patientCount"></span></div>
+        <div class="filter-wrapper">
+          <button class="btn btn-outline btn-sm" id="toggleFilterBtn" style="font-size:12px;">筛选</button>
+          <div id="filterPanel" style="display:none;position:absolute;top:100%;right:0;z-index:50;background:white;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,0.15);border:1px solid #D0DDEB;width:300px;max-height:60vh;overflow-y:auto;">
+            <div style="padding:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-weight:600;color:#2A5A8C;font-size:14px;">筛选条件</span>
+                <span style="cursor:pointer;color:#999;font-size:16px;" id="closeFilterBtn">&times;</span>
+              </div>
+              <div id="filterConditionsList"></div>
+              <button class="btn btn-outline btn-sm" id="addFilterCondBtn" style="width:100%;margin-top:8px;">+ 添加条件</button>
+              <button class="btn btn-primary btn-sm" id="applyFilterBtn" style="width:100%;margin-top:6px;">应用筛选</button>
+              <button class="btn btn-text btn-sm" id="clearFilterBtn" style="width:100%;margin-top:4px;">清除全部筛选</button>
+            </div>
+          </div>
+        </div>
+        <div id="filterTags" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;"></div>
+      </div>
+      <div class="toolbar" style="border-bottom:none;padding-top:0;">
+        <button class="btn btn-primary btn-sm" id="addPatientBtn">+ 添加病人</button>
+        <button class="btn btn-outline btn-sm" id="exportBtn">导出 Excel</button>
+        <button class="btn btn-outline btn-sm" id="importBtn">导入 Excel</button>
+        <button class="btn btn-outline btn-sm" id="manageFieldsBtn">管理自定义字段</button>
+        <button class="btn btn-outline btn-sm" id="toggleMultiBtn">多选模式</button>
+        <button class="btn btn-outline btn-sm" id="columnVisBtn">列显示</button>
+      </div>
+      <div class="toolbar" id="multiSelectToolbar" style="display:none;background:#FFF8F0;border-bottom:1px solid #F0E8D0;">
+        <span style="font-size:12px;color:#C6791A;">已选 <b id="batchCount">0</b> 人 / <b id="batchRecordCount">0</b> 条记录</span>
+        <button class="btn btn-outline btn-sm" id="selectAllBtn">全选</button>
+        <button class="btn btn-outline btn-sm" id="batchMoveBtn">移动到</button>
+        <button class="btn btn-danger btn-sm" id="batchDelBtn">批量删除</button>
+      </div>
+      <div class="table-container" id="tableContainer">
+        <div class="empty-state"><div class="icon">&#x1f4cb;</div><p>请选择左侧村庄查看病人</p></div>
+      </div>
+    </div>
+    </div>
+</div>
+
+<!-- ==================== 病人详情页 ==================== -->
+<div class="page" id="pageDetail">
+  <div class="header">
+    <a class="back-btn" href="#" id="detailBack">&#x2190; 返回列表</a>
+    <span style="font-weight:600;" id="detailHeaderName">病历详情</span>
+    <span></span>
+  </div>
+  <div class="detail-layout">
+    <div class="detail-left">
+      <div class="info-card" id="infoCard"></div>
+      <div class="visit-card" id="visitCard"></div>
+      <div class="info-card" id="customFieldsCard" style="display:none;"></div>
+      <div style="margin-top:16px;">
+        <button class="btn btn-primary" id="editFromDetail">编辑病人</button>
+      </div>
+    </div>
+    <div class="detail-right">
+      <h3 style="font-size:14px;color:#2A5A8C;margin-bottom:12px;">病历照片</h3>
+      <div class="detail-photos" id="detailPhotoGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 表单页（添加/编辑） ==================== -->
+<div class="page" id="pageForm">
+  <div class="header">
+    <a class="back-btn" href="#" id="formBack">&#x2190; 返回列表</a>
+    <span style="font-weight:600;" id="formHeaderTitle">添加病人</span>
+    <span></span>
+  </div>
+  <div class="form-layout">
+    <div class="form-left">
+      <div class="form-section">
+        <h3>基本信息</h3>
+        <div class="form-row">
+          <div class="form-group" style="flex:1;">
+            <label><span class="required">*</span> 姓名</label>
+            <input class="input" type="text" id="formName" placeholder="请输入姓名">
+          </div>
+          <div class="form-group small">
+            <label>性别</label>
+            <select class="select" id="formGender"><option value="男">男</option><option value="女">女</option><option value="其他">其他</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group small">
+            <label>年龄</label>
+            <input class="input" type="number" id="formAge" placeholder="年龄" min="0" max="150">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>电话</label>
+            <input class="input" type="text" id="formPhone" placeholder="请输入电话">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>住址</label>
+          <input class="input" type="text" id="formAddress" placeholder="如：东山村三组">
+        </div>
+        <div id="customFieldsBasic"></div>
+      </div>
+      <div class="form-section">
+        <h3>看病信息</h3>
+        <div class="form-group">
+          <label>看病日期</label>
+          <input class="input" type="date" id="formVisitDate">
+        </div>
+        <div class="form-group">
+          <label>病情类型</label>
+          <select class="select" id="formCondition"></select>
+        </div>
+        <div class="form-group" id="remarkGroup" style="display:none;">
+          <label>病情备注 <span style="font-size:11px;color:#A0BBD0;">（可选）</span></label>
+          <textarea class="input" id="formRemark" rows="2" style="width:100%;resize:vertical;min-height:40px;" placeholder="可填写病情补充说明..."></textarea>
+        </div>
+        <div id="customFieldsVisit"></div>
+      </div>
+      <div class="form-section" id="customFieldsSection" style="display:none;">
+        <h3>附加信息</h3>
+        <div id="customFieldsContainer"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="formSaveBtn">保存</button>
+        <button class="btn btn-outline" id="formCancelBtn">取消</button>
+      </div>
+      <div style="font-size:11px;color:#E74C3C;margin-top:8px;display:none;" id="formError"></div>
+    </div>
+    <div class="form-right">
+      <h3 style="font-size:14px;color:#2A5A8C;margin-bottom:8px;">病历照片</h3>
+      <p style="font-size:12px;color:#A0BBD0;margin-bottom:12px;">支持上传多张病历照片，点击选择或拖拽到下方区域</p>
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">&#x1f4f7;</div>
+        <div class="upload-text">点击选择照片</div>
+        <div class="upload-hint">或将照片拖拽到此处</div>
+      </div>
+      <div class="photo-grid" id="formPhotoGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 图片查看器 -->
+<div class="image-viewer" id="imageViewer" style="display:none;" onclick="this.style.display='none'">
+  <img id="viewerImage" src="">
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

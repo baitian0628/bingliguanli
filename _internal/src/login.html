@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>病历管理系统 - 登录</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .login-page {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #E8F4FD 0%, #D0E8F8 50%, #F0F5FB 100%);
+    }
+    .login-card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(74,144,217,0.15);
+      width: 380px;
+      padding: 40px 36px;
+      text-align: center;
+    }
+    .login-card .logo {
+      font-size: 44px;
+      margin-bottom: 8px;
+    }
+    .login-card h2 {
+      color: #2A5A8C;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    .login-card .subtitle {
+      color: #A0BBD0;
+      font-size: 13px;
+      margin-bottom: 32px;
+    }
+    .login-card .field {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+    .login-card .field label {
+      font-size: 12px;
+      color: #7A9BB5;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .login-card .field input {
+      width: 100%;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 11px;
+      font-size: 15px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .login-hint {
+      margin-top: 16px;
+      font-size: 11px;
+      color: #B0C8DB;
+    }
+    .error-msg {
+      color: #E74C3C;
+      font-size: 12px;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+    .change-pwd-link {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #4A90D9;
+      cursor: pointer;
+    }
+    .change-pwd-link:hover {
+      text-decoration: underline;
+    }
+    .change-pwd-row {
+      display: none;
+      text-align: left;
+      margin-bottom: 18px;
+    }
+    .change-pwd-row.show {
+      display: block;
+    }
+    .change-pwd-row .field:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="login-page">
+  <div class="login-card">
+    <div class="logo">&#x1f3e5;</div>
+    <h2>病历管理系统</h2>
+    <p class="subtitle">请输入密码进入系统</p>
+
+    <div class="field">
+      <label>账号</label>
+      <input class="input" type="text" value="默认用户" readonly style="color:#888;">
+    </div>
+    <div class="field">
+      <label>密码</label>
+      <input class="input" type="password" id="passwordInput" placeholder="请输入密码" autofocus>
+    </div>
+
+    <div class="change-pwd-row" id="changePwdRow">
+      <div class="field">
+        <label>新密码</label>
+        <input class="input" type="password" id="newPasswordInput" placeholder="请输入新密码">
+      </div>
+      <div class="field">
+        <label>确认新密码</label>
+        <input class="input" type="password" id="confirmPasswordInput" placeholder="请再次输入新密码">
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <button class="btn btn-primary login-btn" id="loginBtn">登 录</button>
+    <div class="change-pwd-link" id="changePwdLink">修改密码</div>
+    <p class="login-hint">仅供诊所内部使用</p>
+  </div>
+</div>
+
+<script src="js/login.js"></script>
+</body>
+</html>
